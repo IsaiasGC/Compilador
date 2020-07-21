@@ -1,0 +1,10 @@
+Inicio{
+
+	main{
+		entero x;
+		si x>=5 AND x!=8{}
+	}
+	funcion volar{
+		
+	}
+}Fin
