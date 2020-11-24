@@ -20,20 +20,20 @@ public class Sintactico {
     public Sintactico(String cadena){
         lexico=new Lexico();
         lexico.genararTokens(cadena);
-        lexico.mostrar();
+//        lexico.mostrar();
         main=false;
     }
     public boolean start(){
         if(lexico.generarTablaTokens()){
             tokens=lexico.getTokens();
-            System.out.println(lexico.i);
+//            System.out.println(lexico.i);
             lexico.mostrarTabla();
             if(programa())
                 return true;
             else
                 return false;
         }else{
-            System.out.println(lexico.i);
+//            System.out.println(lexico.i);
             lexico.mostrarTabla();
             error=lexico.getError();
             return false;
@@ -43,8 +43,6 @@ public class Sintactico {
         return error;
     }
     public boolean programa(){
-        if(nextToken()==1){
-            if(nextToken()==2){
                 while(i<tokens.length){
                     switch(nextToken()){
                         case 4:
@@ -60,21 +58,17 @@ public class Sintactico {
                                 return false;
                             break;
                         case 3:
-                            if(i<tokens.length)
-                            if(nextToken()==20 && main)
+//                            if(i<tokens.length)
+                            if(main)
                                 return true;
-                            if(!main)
-                                error="Falta main... ";
                             else
-                                error="Falta 'Fin'";
+                                error="Falta main... ";
                             return false;
                         default:
                             error="Linea "+Lexico.lineas.get(i-2)+": Comando no Reconocido";
                             return false;
                     }
                 }
-            }
-        }
         error="Falta '}Fin'";
         return false;
     }
@@ -146,12 +140,16 @@ public class Sintactico {
         return false;
     }
     public boolean desicion(){
-        if(condicion()){
-            if(nextToken()==2){
-                if(instruccion())
-                    return true;
-            }else
-                error="Linea "+Lexico.lineas.get(i-2)+": Si mal Definido";
+        if(nextToken()==1){
+            if(condicion()){
+                if(nextToken()==20){
+                    if(nextToken()==2){
+                        if(instruccion())
+                            return true;
+                    }else
+                        error="Linea "+Lexico.lineas.get(i-2)+": Si mal Definido";
+                }
+            }
         }
         return false;
     }
@@ -181,13 +179,17 @@ public class Sintactico {
         return false;
     }
     public boolean repeticion(){
-        if(condicion())
-            if(nextToken()==2){
-                if(instruccion())
-                    if(tokens[i-1]==3)
-                        return true;
-            }else
-                error="Linea "+Lexico.lineas.get(i-2)+": Repeticion mal Definida";
+        if(nextToken()==1){
+            if(condicion())
+                if(nextToken()==20){
+                    if(nextToken()==2){
+                        if(instruccion())
+                            if(tokens[i-1]==3)
+                                return true;
+                    }else
+                        error="Linea "+Lexico.lineas.get(i-2)+": Repeticion mal Definida";
+                }
+        }
         return false;
     }
     public boolean asignacion(){
@@ -296,8 +298,10 @@ public class Sintactico {
             return false;
         }else{
             if(nextToken()==2){
-                if(instruccion())
+                if(instruccion()){
+                    i--;
                     main=true;
+                }
             }else
                 error="Linea "+Lexico.lineas.get(i-2)+": main mal Definido, Falta '{'";
         }

@@ -1,0 +1,12 @@
+Inicio{
+
+	main{
+		entero x;
+		si(x==1){
+			x++;
+		}
+	}
+	funcion volar{
+		
+	}
+}Fin

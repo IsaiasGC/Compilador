@@ -1,0 +1,11 @@
+Inicio{
+
+	main{
+		si x==2{
+			imprimir "gbnjmkvghbhjvhc";
+		}
+	}
+	funcion volar{
+		
+	}
+}Fin

@@ -17,11 +17,12 @@ public class Lexico {
     ArrayList<String> tokens;
     static ArrayList<Integer> lineas;
     int[] tabla;
-    ArrayList<String[]> tablaSimbolos;
+    static ArrayList<String[]> tablaSimbolos;
     boolean cad=false;
     String error;
     
     public void genararTokens(String cadena){
+        tablaSimbolos=null;
         int linea=1;
         lineas=new ArrayList<Integer>();
         tokens=new ArrayList<String>();
@@ -70,10 +71,10 @@ public class Lexico {
             }
             else//No es cadena
             switch(t){
-                case "Inicio":
+                case "(":
                     tabla[j]=1;
                     break;
-                case "Fin":
+                case ")":
                     tabla[j]=20;
                     break;
                 case "{":
@@ -82,7 +83,7 @@ public class Lexico {
                 case "}":
                     tabla[j]=3;
                     break;
-                case "funcion":
+                case "funtion":
                     tabla[j]=4;
                     break;
                 case "AND":
@@ -91,13 +92,13 @@ public class Lexico {
                 case "OR":
                     tabla[j]=5;
                     break;
-                case "entero":
+                case "int":
                     tabla[j]=7;
                     break;
-                case "real":
+                case "float":
                     tabla[j]=7;
                     break;
-                case "cadena":
+                case "string":
                     tabla[j]=7;
                     break;
                 case "boolean":
@@ -152,19 +153,19 @@ public class Lexico {
                 case ";":
                     tabla[j]=12;
                     break;
-                case "si":
+                case "if":
                     tabla[j]=16;
                     break;
-                case "repetir":
+                case "while":
                     tabla[j]=17;
                     break;
-                case "imprimir":
+                case "out":
                     tabla[j]=6;
                     break;
                 case "main":
                     tabla[j]=19;
                     break;
-                case "leer":
+                case "in":
                     tabla[j]=25;
                     break;
                 default:
@@ -180,7 +181,7 @@ public class Lexico {
                             if((c>64 && c<91) || (c>96 && c<123) || (c=='$' || c=='_')){
                                 if(tabla[j-1]==7 || tabla[j-1]==4){
                                     tabla[j]=18;
-                                    if(!agregarSimbolo(t)){
+                                    if(!agregarSimbolo(t, tokens.get(i-2))){
                                         tabla[j]=-1;
                                         error="Linea "+lineas.get(i)+": id ya definido";
                                         return false;
@@ -203,11 +204,11 @@ public class Lexico {
                     }
             }
         }
-        System.out.println("Lexico Correcto");
+        System.out.println("\nLexico Correcto");
         System.out.println("Lineas:"+lineas.size()+" // Tokens:"+tokens.size());
         return true;
     }
-    public boolean agregarSimbolo(String id){
+    public boolean agregarSimbolo(String id, String type){
         String simb[]=new String[2];
         if(tablaSimbolos==null)
             tablaSimbolos=new ArrayList<String[]>();
@@ -215,6 +216,7 @@ public class Lexico {
             return false;
         }
         simb[0]=id;
+        simb[1]=type;
         tablaSimbolos.add(simb);
         return true;
     }
@@ -247,6 +249,7 @@ public class Lexico {
         for (int i=0; i<tabla.length; i++) {
             System.out.print(tabla[i]+",");
         }
+        System.out.println("\n");
     }
     public String getError(){
         return error;

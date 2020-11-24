@@ -1,0 +1,15 @@
+Inicio{
+
+	main{
+		entero x=1;
+		repetir x<10 {
+			si x==3 {
+				volar;
+			}
+			x=x+1;
+		}
+	}
+	funcion volar{
+		imprimir "volando";
+	}
+}Fin
