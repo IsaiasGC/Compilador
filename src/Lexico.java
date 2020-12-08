@@ -104,6 +104,10 @@ public class Lexico {
                 case "boolean":
                     tabla[j]=7;
                     break;
+                case "true":
+                case "false":
+                    tabla[j]=21;
+                    break;
                 case "=":
                     if(tabla[j-1]==8){//==
                         tabla[j-1]=9;

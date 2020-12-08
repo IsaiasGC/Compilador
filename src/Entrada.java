@@ -36,7 +36,7 @@ public class Entrada extends javax.swing.JFrame {
     Mensaje mensaje;
     boolean cambios;
     String cadena="";
-    String nuevo="\n\nfuntion example{\n\t\n}\nmain{\n\t\n}\n";
+    String nuevo="\n\nfuntion example(){\n\t\n}\nmain{\n\t\n}\n";
     String sketch="";
     int p;
     DefaultStyledDocument doc;
@@ -47,7 +47,8 @@ public class Entrada extends javax.swing.JFrame {
 //    String upalabra="";
     ArrayList<Token> tokens;
     String[][] palabras={{"funtion", "2"}, {"int", "2"}, {"float", "2"}, {"string", "2"}, 
-        {"boolean", "2"}, {"AND", "4"}, {"OR", "4"}, {"if", "3"}, {"while", "3"}, {"out", "1"}, {"in", "1"}, {"main", "1"}};
+        {"boolean", "2"}, {"AND", "4"}, {"OR", "4"}, {"if", "3"}, {"while", "3"}, {"out", "1"},
+        {"in", "1"}, {"main", "1"}, {"true", "4"}, {"false", "4"}};
     Color colores[]={null, Color.ORANGE, Color.BLUE, Color.GREEN, Color.YELLOW};
 //    int caract=0;
 //    int ncaract;
@@ -78,7 +79,7 @@ public class Entrada extends javax.swing.JFrame {
             Logger.getLogger(Entrada.class.getName()).log(Level.SEVERE, null, ex);
         }
         buscar();
-        texto.setSelectionStart(18);
+        texto.setSelectionStart(22);
         //sketch=texto.getText();
         //System.out.println(sketch);
     }
@@ -102,7 +103,7 @@ public class Entrada extends javax.swing.JFrame {
     }
     public void pintarAmarillo(int inicio, int fin){
         Style amarillo=sc.addStyle("ConstantWidth", null);
-        StyleConstants.setForeground(amarillo, new Color(16, 199, 68));
+        StyleConstants.setForeground(amarillo, Color.ORANGE);
         doc.setCharacterAttributes(inicio, fin, amarillo, true);
     }
     public void pintarNormal(int inicio, int fin){
@@ -163,7 +164,7 @@ public class Entrada extends javax.swing.JFrame {
         for (int i=0; i<cadena.length(); i++) {
             c=cadena.charAt(i);
             if(c!='\n' && c!='\r' && c!='\t' && c!=' '){
-                if(c!='(' && c!=')' && c!=';' && c!='{' && c!='}' && c!='+' && c!='-' && c!='*' && c!='/' && c!='%' && c!='=' && c!='!' && c!='<' && c!='>'&& c!='"'){
+                if(c!='(' && c!=')' && c!=';' && c!='{' && c!='}' && c!='+' && c!='-' && c!='*' && c!='/' && c!='%' && c!='=' && c!='!' && c!='<' && c!='>'){
                     token=token+c;
                     if(f){
                         s=i;
@@ -176,6 +177,11 @@ public class Entrada extends javax.swing.JFrame {
                         tk.token=token;
                         tk.start=s;
                         tk.end=i-1;
+                        tokens.add(tk);
+                        tk=new Token();
+                        tk.token=c+"";
+                        tk.start=i;
+                        tk.end=i;
                         tokens.add(tk);
                         token="";
 //                        System.out.print(i+", ");
@@ -229,6 +235,8 @@ public class Entrada extends javax.swing.JFrame {
                 break;
             }
         }
+        System.out.println("Palabra:"+reservada.token+" - val:"+val+"\nStart:"+reservada.start+" - End:"+reservada.end);
+        pintarNormal(reservada.start, reservada.end);
         if(val){
 //            SimpleAttributeSet attrs = new SimpleAttributeSet();
 //            StyleConstants.setForeground(attrs, colores[Integer.parseInt(color)]);
@@ -252,15 +260,15 @@ public class Entrada extends javax.swing.JFrame {
 //                StyleConstants.setForeground(attrs, Color.DARK_GRAY);
 //                texto.getStyledDocument().insertString(texto.getStyledDocument().getLength()," ", attrs);
 //            }catch(BadLocationException ex){}
-        }else{
-            pintarNormal(reservada.start, reservada.end);
+        }
+//        else{
+//            pintarNormal(reservada.start, reservada.end);
 //            SimpleAttributeSet attrs = new SimpleAttributeSet();
 //            StyleConstants.setForeground(attrs, Color.DARK_GRAY);
 //            try {
 //                texto.getStyledDocument().insertString(texto.getStyledDocument().getLength(), reservada+" ", attrs);
 //            }catch(BadLocationException ex){}
-        }
-        texto.setForeground(new Color(192,192,192));
+//        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -294,7 +302,7 @@ public class Entrada extends javax.swing.JFrame {
 
         texto.setBackground(new java.awt.Color(51, 51, 51));
         texto.setDocument(doc);
-        texto.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        texto.setFont(new java.awt.Font("mononoki NF", 0, 14)); // NOI18N
         texto.setForeground(new java.awt.Color(192, 192, 192));
         texto.setCaretColor(new java.awt.Color(192, 192, 192));
         texto.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
@@ -339,7 +347,7 @@ public class Entrada extends javax.swing.JFrame {
                 .addGap(16, 16, 16))
         );
 
-        jMenuBar1.setBackground(new java.awt.Color(255, 255, 255));
+        jMenuBar1.setBackground(new java.awt.Color(101, 101, 101));
 
         menuArchivo.setText("Archivo");
 

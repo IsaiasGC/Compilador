@@ -74,10 +74,15 @@ public class Sintactico {
     }
     public boolean declaracion(){
         if(nextToken()==18){
-            if(nextToken()==12)
+            if(nextToken()==12){
                 return true;
-            else
-                error="Linea "+Lexico.lineas.get(i-2)+": Falta ';'";
+            }else{
+                i--;
+                if(nextToken()==8){
+                    return asignacion();
+                }else
+                    error="Linea "+Lexico.lineas.get(i-2)+": Falta ';'";
+            }
         }else
             error="Linea "+Lexico.lineas.get(i-2)+": Id no Colocado;";
         return false;
@@ -130,11 +135,17 @@ public class Sintactico {
     }
     public boolean metodo(){
         if(nextToken()==18){
-            if(nextToken()==2){
-                if(instruccion())
-                    return true;
-            }else
-                error="Linea "+Lexico.lineas.get(i-2)+": funcion mal Definida, '{'";
+            if(nextToken()==1)
+                if(nextToken()==20)
+                    if(nextToken()==2){
+                        if(instruccion())
+                            return true;
+                    }else
+                        error="Linea "+Lexico.lineas.get(i-2)+": funcion mal Definida, '{'";
+                else
+                    error="Linea "+Lexico.lineas.get(i-2)+": funcion mal Definida, '('";
+            else
+                error="Linea "+Lexico.lineas.get(i-2)+": funcion mal Definida, ')'";
         }else
             error="Linea "+Lexico.lineas.get(i-2)+": funcion mal Definida";
         return false;
@@ -174,7 +185,9 @@ public class Sintactico {
                         return true;
                 }
             }
-        }
+        }else
+            if(a==21)
+                return true;
         error="Linea "+Lexico.lineas.get(i-2)+": Condicion mal Definida";
         return false;
     }
@@ -195,7 +208,7 @@ public class Sintactico {
     public boolean asignacion(){
         int a=nextToken();
         
-        if(a==18 || a==13 || a==14 || cadena() || a==25){
+        if(a==18 || a==13 || a==14 || a==25){
             if(a==25){//Si es lectura
                 if(lectura())
                     return true;
@@ -211,11 +224,13 @@ public class Sintactico {
                     return false;
                 }      
             }
-        }
+        }else
+            return cadena() || a==21;
         return false;
     }
     public boolean operacion(){
         int a=tokens[i-1];
+        
         if(a!=9){
             if(a==18 || a==13 || a==14 || cadena()){
                 a=tokens[i];
@@ -228,6 +243,9 @@ public class Sintactico {
             }
             error="Linea "+Lexico.lineas.get(i-2)+": mal uso de los signos";
             return false;
+        }else{
+            if(a==20)
+                i--;
         }
         return true;
     }
