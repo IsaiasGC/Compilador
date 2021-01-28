@@ -1,4 +1,3 @@
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -10,323 +9,349 @@
  * @author Isaias
  */
 public class Sintactico {
-    
+
     Lexico lexico;
     int[] tokens;
     int i;
     String error;
     boolean main;
-    
-    public Sintactico(String cadena){
-        lexico=new Lexico();
+
+    public Sintactico(String cadena) {
+        lexico = new Lexico();
         lexico.genararTokens(cadena);
-//        lexico.mostrar();
-        main=false;
+        // lexico.mostrar();
+        main = false;
     }
-    public boolean start(){
-        if(lexico.generarTablaTokens()){
-            tokens=lexico.getTokens();
-//            System.out.println(lexico.i);
+
+    public boolean start() {
+        if (lexico.generarTablaTokens()) {
+            tokens = lexico.getTokens();
+            // System.out.println(lexico.i);
             lexico.mostrarTabla();
-            if(programa())
+            if (programa())
                 return true;
             else
                 return false;
-        }else{
-//            System.out.println(lexico.i);
+        } else {
+            // System.out.println(lexico.i);
             lexico.mostrarTabla();
-            error=lexico.getError();
+            error = lexico.getError();
             return false;
         }
     }
-    public String getError(){
+
+    public String getError() {
         return error;
     }
-    public boolean programa(){
-                while(i<tokens.length){
-                    switch(nextToken()){
-                        case 4:
-                            if(!metodo())
-                                return false;
-                            break;
-                        case 7:
-                            if(!declaracion())
-                                return false;
-                            break;
-                        case 19:
-                            if(!mn())
-                                return false;
-                            break;
-                        case 3:
-//                            if(i<tokens.length)
-                            if(main)
-                                return true;
-                            else
-                                error="Falta main... ";
-                            return false;
-                        default:
-                            error="Linea "+Lexico.lineas.get(i-2)+": Comando no Reconocido";
-                            return false;
-                    }
-                }
-        error="Falta '}Fin'";
-        return false;
-    }
-    public boolean declaracion(){
-        if(nextToken()==18){
-            if(nextToken()==12){
-                return true;
-            }else{
-                i--;
-                if(nextToken()==8){
-                    return asignacion();
-                }else
-                    error="Linea "+Lexico.lineas.get(i-2)+": Falta ';'";
+
+    public boolean programa() {
+        while (i < tokens.length) {
+            switch (nextToken()) {
+                case 4:
+                    if (!metodo())
+                        return false;
+                    break;
+                case 7:
+                    if (!declaracion())
+                        return false;
+                    break;
+                case 19:
+                    if (!mn())
+                        return false;
+                    break;
+                case 3:
+                    // if(i<tokens.length)
+                    if (main)
+                        return true;
+                    else
+                        error = "Falta main... ";
+                    return false;
+                default:
+                    error = "Linea " + Lexico.lineas.get(i - 2) + ": Comando no Reconocido";
+                    return false;
             }
-        }else
-            error="Linea "+Lexico.lineas.get(i-2)+": Id no Colocado;";
+        }
+        error = "Falta '}'";
         return false;
     }
-    public boolean instruccion(){
-        while(i<tokens.length){
-            switch(nextToken()){
+
+    public boolean declaracion() {
+        if (nextToken() == 18) {
+            if (nextToken() == 12) {
+                return true;
+            } else {
+                i--;
+                if (nextToken() == 8) {
+                    return asignacion();
+                } else
+                    error = "Linea " + Lexico.lineas.get(i - 2) + ": Falta ';'";
+            }
+        } else
+            error = "Linea " + Lexico.lineas.get(i - 2) + ": Id no Colocado;";
+        return false;
+    }
+
+    public boolean instruccion() {
+        while (i < tokens.length) {
+            switch (nextToken()) {
                 case 3:
                     return true;
                 case 7:
-                    if(!declaracion())
+                    if (!declaracion())
                         return false;
                     break;
                 case 16:
-                    if(!desicion())
+                    if (!desicion())
                         return false;
                     break;
                 case 17:
-                    if(!repeticion())
+                    if (!repeticion())
                         return false;
                     break;
                 case 18:
-                    if(nextToken()==8){
-                        if(!asignacion())
+                    if (nextToken() == 8) {
+                        if (!asignacion())
                             return false;
-                    }else{
+                    } else {
                         i--;
-                        if(!llamada())
+                        if (!llamada())
                             return false;
-                    }   
+                    }
                     break;
                 case 6:
-                    if(!impresion())
+                    if (!impresion())
                         return false;
                     break;
                 case 25:
-                    if(!lectura())
+                    if (!lectura())
                         return false;
                     break;
             }
         }
-        error="Linea "+Lexico.lineas.get(i-2)+": Instruccion mal Definioda, Falta '}'";
+        error = "Linea " + Lexico.lineas.get(i - 2) + ": Instruccion mal Definioda, Falta '}'";
         return false;
     }
-    public boolean llamada(){
-        if(nextToken()==12)
+
+    public boolean llamada() {
+        if (nextToken() == 12)
             return true;
-        error="Linea "+Lexico.lineas.get(i-2)+": Falta ';'";
+        error = "Linea " + Lexico.lineas.get(i - 2) + ": Falta ';'";
         return false;
     }
-    public boolean metodo(){
-        if(nextToken()==18){
-            if(nextToken()==1)
-                if(nextToken()==20)
-                    if(nextToken()==2){
-                        if(instruccion())
+
+    public boolean metodo() {
+        if (nextToken() == 18) {
+            if (nextToken() == 1)
+                if (nextToken() == 20)
+                    if (nextToken() == 2) {
+                        if (instruccion()) {
                             return true;
-                    }else
-                        error="Linea "+Lexico.lineas.get(i-2)+": funcion mal Definida, '{'";
+                        }
+                    } else
+                        error = "Linea " + Lexico.lineas.get(i - 2) + ": funcion mal Definida, '{'";
                 else
-                    error="Linea "+Lexico.lineas.get(i-2)+": funcion mal Definida, '('";
+                    error = "Linea " + Lexico.lineas.get(i - 2) + ": funcion mal Definida, '('";
             else
-                error="Linea "+Lexico.lineas.get(i-2)+": funcion mal Definida, ')'";
-        }else
-            error="Linea "+Lexico.lineas.get(i-2)+": funcion mal Definida";
+                error = "Linea " + Lexico.lineas.get(i - 2) + ": funcion mal Definida, ')'";
+        } else
+            error = "Linea " + Lexico.lineas.get(i - 2) + ": funcion mal Definida";
         return false;
     }
-    public boolean desicion(){
-        if(nextToken()==1){
-            if(condicion()){
-                if(nextToken()==20){
-                    if(nextToken()==2){
-                        if(instruccion())
-                            return true;
-                    }else
-                        error="Linea "+Lexico.lineas.get(i-2)+": Si mal Definido";
+
+    public boolean desicion() {
+        if (nextToken() == 1) {
+            if (condicion()) {
+                if (nextToken() == 20) {
+                    if (nextToken() == 2) {
+                        if (instruccion()) {
+                            System.out.println("Aqui vamos bien");
+                            if (nextToken() != 21) {
+                                i--;
+                                return true;
+                            } else if (nextToken() == 2) {
+                                System.out.println("Si tiene else");
+                                if (instruccion())
+                                    return true;
+                            } else
+                                error = "Linea " + Lexico.lineas.get(i - 2) + ": funcion mal Definida, '{'";
+                        }
+                    } else
+                        error = "Linea " + Lexico.lineas.get(i - 2) + ": Si mal Definido";
                 }
             }
         }
         return false;
     }
-    public boolean condicion(){
-        int a=nextToken();
-        
-        if(a==18 || a==13 || a==14 || cadena()){
-            a=nextToken();
-            if(a==9){
-                a=nextToken();
-                if(a==18 || a==13 || a==14 || cadena()){
-                    a=tokens[i];
-                    if(a==5){
+
+    public boolean condicion() {
+        int a = nextToken();
+
+        if (a == 18 || a == 13 || a == 14 || cadena()) {
+            a = nextToken();
+            if (a == 9) {
+                a = nextToken();
+                if (a == 18 || a == 13 || a == 14 || cadena()) {
+                    a = tokens[i];
+                    if (a == 5) {
                         i++;
-                        if(condicion())
+                        if (condicion())
                             return true;
-                        else{
-                            error="Linea "+Lexico.lineas.get(i-2)+": Condicion mal Definida";
+                        else {
+                            error = "Linea " + Lexico.lineas.get(i - 2) + ": Condicion mal Definida";
                             return false;
                         }
-                    }else
+                    } else
                         return true;
                 }
             }
-        }else
-            if(a==21)
-                return true;
-        error="Linea "+Lexico.lineas.get(i-2)+": Condicion mal Definida";
+        } else if (a == 21)
+            return true;
+        error = "Linea " + Lexico.lineas.get(i - 2) + ": Condicion mal Definida";
         return false;
     }
-    public boolean repeticion(){
-        if(nextToken()==1){
-            if(condicion())
-                if(nextToken()==20){
-                    if(nextToken()==2){
-                        if(instruccion())
-                            if(tokens[i-1]==3)
+
+    public boolean repeticion() {
+        if (nextToken() == 1) {
+            if (condicion())
+                if (nextToken() == 20) {
+                    if (nextToken() == 2) {
+                        if (instruccion())
+                            if (tokens[i - 1] == 3)
                                 return true;
-                    }else
-                        error="Linea "+Lexico.lineas.get(i-2)+": Repeticion mal Definida";
+                    } else
+                        error = "Linea " + Lexico.lineas.get(i - 2) + ": Repeticion mal Definida";
                 }
         }
         return false;
     }
-    public boolean asignacion(){
-        int a=nextToken();
-        
-        if(a==18 || a==13 || a==14 || a==25){
-            if(a==25){//Si es lectura
-                if(lectura())
+
+    public boolean asignacion() {
+        int a = nextToken();
+
+        if (a == 18 || a == 13 || a == 14 || a == 25) {
+            if (a == 25) {// Si es lectura
+                if (lectura())
                     return true;
-            }else{//sino es asiganacion normal
-                a=nextToken();
-                if(a==10){
-                    if(asignacion())
+            } else {// sino es asiganacion normal
+                a = nextToken();
+                if (a == 10) {
+                    if (asignacion())
                         return true;
-                }else{
-                    if(a==12)
+                } else {
+                    if (a == 12)
                         return true;
-                    error="Linea "+Lexico.lineas.get(i-2)+": Falta ';'";
+                    error = "Linea " + Lexico.lineas.get(i - 2) + ": Falta ';'";
                     return false;
-                }      
+                }
             }
-        }else
-            return cadena() || a==21;
+        } else
+            return cadena() || a == 21;
         return false;
     }
-    public boolean operacion(){
-        int a=tokens[i-1];
-        
-        if(a!=9){
-            if(a==18 || a==13 || a==14 || cadena()){
-                a=tokens[i];
-                if(a==10){
-                    i+=2;
-                    if(operacion())
+
+    public boolean operacion() {
+        int a = tokens[i - 1];
+
+        if (a != 9) {
+            if (a == 18 || a == 13 || a == 14 || cadena()) {
+                a = tokens[i];
+                if (a == 10) {
+                    i += 2;
+                    if (operacion())
                         return true;
                 }
                 return true;
             }
-            error="Linea "+Lexico.lineas.get(i-2)+": mal uso de los signos";
+            error = "Linea " + Lexico.lineas.get(i - 2) + ": mal uso de los signos";
             return false;
-        }else{
-            if(a==20)
+        } else {
+            if (a == 20)
                 i--;
         }
         return true;
     }
-    public boolean cadena(){
-        if(tokens[i-1]==11){
-            if(tokens[i]==15){
-                if(tokens[i+1]==11){
-                    i+=2;
+
+    public boolean cadena() {
+        if (tokens[i - 1] == 11) {
+            if (tokens[i] == 15) {
+                if (tokens[i + 1] == 11) {
+                    i += 2;
                     return true;
                 }
-                error="Linea "+Lexico.lineas.get(i-2)+": Cadena mal Definida, Falta '\"'";
+                error = "Linea " + Lexico.lineas.get(i - 2) + ": Cadena mal Definida, Falta '\"'";
                 return false;
-            }else{
-                if(tokens[i]==11){
+            } else {
+                if (tokens[i] == 11) {
                     i++;
                     return true;
                 }
-                error="Linea "+Lexico.lineas.get(i-2)+": Cadena mal Definida, Falta '\"'";
+                error = "Linea " + Lexico.lineas.get(i - 2) + ": Cadena mal Definida, Falta '\"'";
                 return false;
             }
         }
         return false;
     }
-    public boolean impresion(){
-        int a=nextToken();
-        if(a==11){
-            a=nextToken();
-            if(a==15 ){
-                if(nextToken()==11)
-                    if(nextToken()==12)
+
+    public boolean impresion() {
+        int a = nextToken();
+        if (a == 11) {
+            a = nextToken();
+            if (a == 15) {
+                if (nextToken() == 11)
+                    if (nextToken() == 12)
                         return true;
                     else
-                        error="Linea "+Lexico.lineas.get(i-2)+": Falta ';'";
+                        error = "Linea " + Lexico.lineas.get(i - 2) + ": Falta ';'";
                 else
-                    error="Linea "+Lexico.lineas.get(i-2)+": No esta limitada la Cadena";
-            }else{
-                if(a==11)
-                    if(nextToken()==12)
+                    error = "Linea " + Lexico.lineas.get(i - 2) + ": No esta limitada la Cadena";
+            } else {
+                if (a == 11)
+                    if (nextToken() == 12)
                         return true;
                     else
-                        error="Linea "+Lexico.lineas.get(i-2)+": Falta ';'";
+                        error = "Linea " + Lexico.lineas.get(i - 2) + ": Falta ';'";
                 else
-                    error="Linea "+Lexico.lineas.get(i-2)+": No esta limitada la Cadena";
+                    error = "Linea " + Lexico.lineas.get(i - 2) + ": No esta limitada la Cadena";
             }
-        }else
-            if(a==18)
-                if(nextToken()==12)
-                    return true;
-                else
-                    error="Linea "+Lexico.lineas.get(i-2)+": Falta ';'";
-            else            
-                error="Linea "+Lexico.lineas.get(i-2)+": Falta cadena";
-        return false;
-    }
-    public boolean lectura(){
-        if(nextToken()==7)
-            if(nextToken()==12)
+        } else if (a == 18)
+            if (nextToken() == 12)
                 return true;
             else
-                error="Linea "+Lexico.lineas.get(i-2)+": Falta ';'";
+                error = "Linea " + Lexico.lineas.get(i - 2) + ": Falta ';'";
         else
-            error="Linea "+Lexico.lineas.get(i-2)+": Falta tipo de Dato que se leera...";
+            error = "Linea " + Lexico.lineas.get(i - 2) + ": Falta cadena";
         return false;
     }
-    public boolean mn(){
-        if(main){
-            error="Linea "+Lexico.lineas.get(i-2)+": Solo debe de haber un main";
+
+    public boolean lectura() {
+        if (nextToken() == 7)
+            if (nextToken() == 12)
+                return true;
+            else
+                error = "Linea " + Lexico.lineas.get(i - 2) + ": Falta ';'";
+        else
+            error = "Linea " + Lexico.lineas.get(i - 2) + ": Falta tipo de Dato que se leera...";
+        return false;
+    }
+
+    public boolean mn() {
+        if (main) {
+            error = "Linea " + Lexico.lineas.get(i - 2) + ": Solo debe de haber un main";
             return false;
-        }else{
-            if(nextToken()==2){
-                if(instruccion()){
+        } else {
+            if (nextToken() == 2) {
+                if (instruccion()) {
                     i--;
-                    main=true;
+                    main = true;
                 }
-            }else
-                error="Linea "+Lexico.lineas.get(i-2)+": main mal Definido, Falta '{'";
+            } else
+                error = "Linea " + Lexico.lineas.get(i - 2) + ": main mal Definido, Falta '{'";
         }
         return main;
     }
-    public int nextToken(){
-        int tk=tokens[i];
+
+    public int nextToken() {
+        int tk = tokens[i];
         i++;
         return tk;
     }

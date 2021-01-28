@@ -24,8 +24,8 @@ public class TextFileManager {
     
     public TextFileManager(String fileIn, String fileOut){
         //super(fileIn, fileOut);
-        this.fileIn=fileIn;
-        this.fileOut=fileOut;
+        this.fileIn="code/"+fileIn;
+        this.fileOut="code/"+fileOut;
     }
     public void writeLine(String texto) throws IOException{
         try{
